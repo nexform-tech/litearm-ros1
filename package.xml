@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>litearm_ros1</name>
+  <version>0.1.0</version>
+  <description>ROS1 (Noetic) bridge for the LiteArm robotic arm. Wraps litearm-python to expose joint states, TCP pose/TF, joint commands and movej/movel/fk/ik services.</description>
+  <maintainer email="56000204@qq.com">luochun</maintainer>
+  <license>Proprietary</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>message_generation</build_depend>
+  <exec_depend>message_runtime</exec_depend>
+
+  <depend>geometry_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>std_srvs</depend>
+  <depend>tf</depend>
+
+  <!-- Runtime python dependencies (apt-installed) -->
+  <exec_depend>python3-rospy</exec_depend>
+  <exec_depend>python3-roslib</exec_depend>
+
+  <!--
+    litearm-python (pip) + eclipse-zenoh are NOT rosdep-resolvable; install
+    them manually on the controller:
+        pip install -e /path/to/litearm-python
+  -->
+</package>

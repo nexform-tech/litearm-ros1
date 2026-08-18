@@ -1,0 +1,16 @@
+<launch>
+  <!-- litearm_ros1 bridge launch. Usage:
+       roslaunch litearm_ros1 litearm.launch endpoint:=tcp/192.168.31.237:7447 -->
+  <arg name="endpoint" default="tcp/192.168.31.237:7447" />
+  <arg name="arm_id" default="armA" />
+  <arg name="loop_hz" default="50.0" />
+  <arg name="cmd_speed" default="0.5" />
+
+  <node name="litearm_node" pkg="litearm_ros1" type="litearm_node.py" output="screen">
+    <param name="endpoint" value="$(arg endpoint)" />
+    <param name="arm_id" value="$(arg arm_id)" />
+    <param name="loop_hz" value="$(arg loop_hz)" />
+    <param name="cmd_speed" value="$(arg cmd_speed)" />
+    <rosparam file="$(find litearm_ros1)/config/litearm.yaml" />
+  </node>
+</launch>
