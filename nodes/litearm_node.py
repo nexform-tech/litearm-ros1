@@ -33,7 +33,15 @@ import tf
 import litearm
 
 from litearm_ros1.bridge import LiteArmBridge
-from litearm_ros1.srv import Fk, GetState, Ik, Movej, Movel
+from litearm_ros1.srv import (
+    Fk, FkResponse,
+    GetState, GetStateResponse,
+    Ik, IkResponse,
+    Movej, MovejResponse,
+    Movel, MovelResponse,
+)
+
+import os
 
 
 class LiteArmNode:
@@ -109,36 +117,36 @@ class LiteArmNode:
 
     # ── services ─────────────────────────────────────────────────────────────
 
-    def _srv_movej(self, req) -> Movej.response_class:
+    def _srv_movej(self, req) -> MovejResponse:
         ok, message = self.bridge.movej(req.q_target, speed=req.speed, settle_s=req.settle_s)
-        res = Movej.response_class()
+        res = MovejResponse()
         res.success, res.message = ok, message
         return res
 
-    def _srv_movel(self, req) -> Movel.response_class:
+    def _srv_movel(self, req) -> MovelResponse:
         xyz_quat = _pose_to_xyz_quat(req.pose)
         ok, message = self.bridge.movel(xyz_quat, speed=req.speed, settle_s=req.settle_s)
-        res = Movel.response_class()
+        res = MovelResponse()
         res.success, res.message = ok, message
         return res
 
-    def _srv_fk(self, req) -> Fk.response_class:
+    def _srv_fk(self, req) -> FkResponse:
         pose, ok, message = self.bridge.fk(req.q)
-        res = Fk.response_class()
+        res = FkResponse()
         res.success, res.message = ok, message
         if pose is not None:
             res.pose = _xyz_quat_to_pose(pose)
         return res
 
-    def _srv_ik(self, req) -> Ik.response_class:
+    def _srv_ik(self, req) -> IkResponse:
         q, ok, message = self.bridge.ik(_pose_to_xyz_quat(req.pose), q_seed=req.q_seed)
-        res = Ik.response_class()
+        res = IkResponse()
         res.success, res.message = ok, message
         res.q = q or []
         return res
 
-    def _srv_get_state(self, req) -> GetState.response_class:
-        res = GetState.response_class()
+    def _srv_get_state(self, req) -> GetStateResponse:
+        res = GetStateResponse()
         state = self.bridge.get_state()
         if state is None:
             res.message = "no state yet"
@@ -181,7 +189,7 @@ def _xyz_quat_to_pose(xyz_quat) -> Pose:
 
 def main():
     rospy.init_node("litearm_node")
-    endpoint = rospy.get_param("~endpoint", "tcp/127.0.0.1:7447")
+    endpoint = rospy.get_param("~endpoint", os.environ.get("LITEARM_ENDPOINT", "tcp/127.0.0.1:7447"))
     arm_id = rospy.get_param("~arm_id", "armA")
     loop_hz = rospy.get_param("~loop_hz", 50.0)
     joint_names = rospy.get_param("~joint_names", [f"joint{i}" for i in range(7)])

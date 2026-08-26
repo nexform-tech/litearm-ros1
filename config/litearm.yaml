@@ -1,6 +1,6 @@
 # litearm_ros1 bridge configuration
 # (merged on top of the launch-file args)
-endpoint: tcp/192.168.31.237:7447
+endpoint: tcp/127.0.0.1:7447
 arm_id: armA
 loop_hz: 50.0
 cmd_speed: 0.5
